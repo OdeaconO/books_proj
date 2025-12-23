@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { api } from "../api";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Login = () => {
     const [inputs, setInputs] = useState({
@@ -11,7 +12,7 @@ const Login = () => {
     const navigate = useNavigate();
 
     const handleChange = (e) => {
-        setInputs((prev) => ({...prev, [e.target.value]: e.target.value}));
+        setInputs((prev) => ({...prev, [e.target.name]: e.target.value}));
     };
 
     const handleSubmit = async (e) => {
@@ -21,7 +22,7 @@ const Login = () => {
             console.log(inputs);
             const res = await api.post("/auth/login", inputs);
             localStorage.setItem("token", res.data.token);
-            navigate("/");
+            navigate("/books");
         } catch (err){
             console.log(err.response?.data || err.message);
         }
@@ -44,6 +45,11 @@ const Login = () => {
             onChange={handleChange} />
 
             <button className="loginButton" onClick={handleSubmit}>Login</button>
+            
+            <p style={{ marginTop: "10px" }}>
+                Don't have an account?{" "}
+                <Link to="/register">Register here</Link>
+            </p>
         </div>
     );
 };

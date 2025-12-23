@@ -3,8 +3,6 @@ dotenv.config();
 import { db } from "./db.js";
 import express from "express";
 import cors from "cors";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import authRoutes from "./routes/auth.js";
 import { verifyToken } from "./middleware/verifyToken.js";
 
