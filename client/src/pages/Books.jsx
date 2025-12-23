@@ -47,6 +47,7 @@ const Books = () => {
           </div>
         ))}
       </div>
+      <button><Link to="/account">Account</Link></button>
       <button><Link to="/add">Add new book</Link></button>
       <button onClick={handleLogout}>Logout</button>
     </div>

@@ -1,10 +1,10 @@
 import { Navigate } from "react-router-dom";
+import { useAuth } from "./context/AuthContext";
 
 const GuestRoute = ({ children }) => {
-  const token = localStorage.getItem("token");
+  const { isAuthenticated } = useAuth();
 
-  // If already logged in, redirect to books
-  if (token) {
+  if (isAuthenticated) {
     return <Navigate to="/books" replace />;
   }
 

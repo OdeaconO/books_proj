@@ -2,6 +2,7 @@ import { useState } from "react";
 import { api } from "../api";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
     const [inputs, setInputs] = useState({
@@ -10,6 +11,7 @@ const Login = () => {
     });
 
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const handleChange = (e) => {
         setInputs((prev) => ({...prev, [e.target.name]: e.target.value}));
@@ -21,7 +23,7 @@ const Login = () => {
         try{
             console.log(inputs);
             const res = await api.post("/auth/login", inputs);
-            localStorage.setItem("token", res.data.token);
+            login(res.data.token);
             navigate("/books");
         } catch (err){
             console.log(err.response?.data || err.message);
