@@ -5,6 +5,7 @@ import express from "express";
 import cors from "cors";
 import authRoutes from "./routes/auth.js";
 import { verifyToken } from "./middleware/verifyToken.js";
+import { authorizeBookOwner } from "./middleware/authorizeBookOwner.js";
 
 const app = express(); 
 
@@ -29,12 +30,14 @@ app.get("/books", (req, res)=>{
 })
 
 app.post("/books", verifyToken, (req,res)=>{
-    const q = "INSERT INTO books (`title`, `desc`, `price` ,`cover`) VALUES (?)";
+    const q = `INSERT INTO books (\`title\`, \`desc\`, \`price\`, \`cover\`, \`user_id\`, \`username\`) VALUES (?)`;
     const values = [
         req.body.title,
         req.body.desc,
         req.body.price,
-        req.body.cover
+        req.body.cover,
+        req.user.id,
+        req.user.username
     ];
 
     db.query(q,[values],(err,data)=>{
@@ -43,7 +46,7 @@ app.post("/books", verifyToken, (req,res)=>{
     })
 })
 
-app.delete("/books/:id", verifyToken, (req, res)=>{
+app.delete("/books/:id", verifyToken, authorizeBookOwner, (req, res)=>{
     const bookId = req.params.id;
     const q = "DELETE FROM books WHERE id = ?"; 
 
@@ -53,7 +56,7 @@ app.delete("/books/:id", verifyToken, (req, res)=>{
     })
 })
 
-app.put("/books/:id", verifyToken, (req, res)=>{
+app.put("/books/:id", verifyToken, authorizeBookOwner,(req, res)=>{
     const bookId = req.params.id;
     const q = "UPDATE books SET `title` = ?, `desc` = ?, `price` = ?, `cover` = ? WHERE id = ?"; 
 

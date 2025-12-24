@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { api } from "../api";
 import { Link } from 'react-router-dom';
+import { useAuth } from "../context/AuthContext";
 
 const Books = () => {
 
     const [books,setBooks] = useState([]);
+    const { user } = useAuth();
 
     useEffect(()=>{
         const fetchAllBooks = async ()=>{
@@ -41,9 +43,15 @@ const Books = () => {
             {book.cover && <img src={book.cover} alt=""/>}
             <h2>{book.title}</h2>
             <p>{book.desc}</p>
+            <p><strong>Recommended by:</strong> {book.username}</p>
             <span>{book.price}</span>
-            <button className="delete" onClick={()=>handleDelete(book.id)}>Delete</button>
-            <button className="update"><Link to={`/update/${book.id}`}>Update</Link></button>
+            {(user.role === "admin" || user.id === book.user_id) && (
+              <>
+              <button className="delete" onClick={() => handleDelete(book.id)}>Delete</button>
+              <button className="update"><Link to={`/update/${book.id}`}>Update</Link></button>
+              </>
+            )}
+
           </div>
         ))}
       </div>
