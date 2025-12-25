@@ -1,3 +1,9 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 .App{
     height: 100vh;
     padding: 0px 100px;
@@ -74,4 +80,56 @@ input{
     color: white;
     font-weight: bold;
     cursor: pointer;
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background-color: #222;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px;
+  z-index: 1000;
+}
+
+.nav-left .logo {
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+}
+
+.nav-right {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.nav-right a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.nav-right a:hover {
+  text-decoration: underline;
+}
+
+.logout-btn {
+  background-color: crimson;
+  border: none;
+  padding: 6px 12px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* PUSH CONTENT BELOW FIXED NAVBAR */
+.App {
+  padding-top: 80px;
 }

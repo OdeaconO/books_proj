@@ -29,22 +29,16 @@ const Books = () => {
       }
     }
 
-    const handleLogout = () => {
-      localStorage.removeItem("token");
-      window.location.href = "/login";
-    };
-
   return (
     <div>
-      <h1>Paper Town</h1>
       <div className="books">
         {books.map(book=>(
           <div className="book" key={book.id}>
             {book.cover && <img src={book.cover} alt=""/>}
             <h2>{book.title}</h2>
-            <p>{book.desc}</p>
+            <p><strong>Description:</strong> {book.desc}</p>
             <p><strong>Recommended by:</strong> {book.username}</p>
-            <span>{book.price}</span>
+            <span><strong>Price:</strong> {book.price}</span>
             {(user.role === "admin" || user.id === book.user_id) && (
               <>
               <button className="delete" onClick={() => handleDelete(book.id)}>Delete</button>
@@ -54,10 +48,6 @@ const Books = () => {
           </div>
         ))}
       </div>
-      <button><Link to="/account">Account</Link></button>
-      <button><Link to="/add">Add new book</Link></button>
-      <button><Link to="/my-books">My Books</Link></button>
-      <button onClick={handleLogout}>Logout</button>
     </div>
   )
 }

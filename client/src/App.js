@@ -15,6 +15,7 @@ import Update from "./pages/Update";
 import MyBooks from "./pages/MyBooks";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Navbar from "./components/Navbar";
 import "./style.css";
 
 function App() {
@@ -29,22 +30,24 @@ function App() {
 }, []);
 
   return (
-    <div className="App">
-      <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Navigate to="/login"/>}/>
-        <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
-        <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
+  <BrowserRouter>
+  <Navbar/>
+  <div className="App">
+    <Routes>
+      <Route path="/" element={<Navigate to="/login"/>}/>
+      <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
+      <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
 
-        <Route path="/account" element={<ProtectedRoute><Account/></ProtectedRoute>}/>
-        <Route path="/books" element={<ProtectedRoute><Books /></ProtectedRoute>} />
-        <Route path="/my-books" element={<ProtectedRoute><MyBooks /></ProtectedRoute>}/>
-        <Route path="/add" element={<ProtectedRoute><Add/></ProtectedRoute>}/>
-        <Route path="/update/:id" element={<ProtectedRoute><Update/></ProtectedRoute>}/>
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
-      </BrowserRouter>
-    </div>
+      <Route path="/account" element={<ProtectedRoute><Account/></ProtectedRoute>}/>
+      <Route path="/books" element={<ProtectedRoute><Books /></ProtectedRoute>} />
+      <Route path="/my-books" element={<ProtectedRoute><MyBooks /></ProtectedRoute>}/>
+      <Route path="/add" element={<ProtectedRoute><Add/></ProtectedRoute>}/>
+      <Route path="/update/:id" element={<ProtectedRoute><Update/></ProtectedRoute>}/>
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
+  </div>
+  </BrowserRouter>
+
   );
 }
 
