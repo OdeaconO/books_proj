@@ -51,12 +51,12 @@ const Books = () => {
               <button className="update"><Link to={`/update/${book.id}`}>Update</Link></button>
               </>
             )}
-
           </div>
         ))}
       </div>
       <button><Link to="/account">Account</Link></button>
       <button><Link to="/add">Add new book</Link></button>
+      <button><Link to="/my-books">My Books</Link></button>
       <button onClick={handleLogout}>Logout</button>
     </div>
   )

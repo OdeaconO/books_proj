@@ -29,6 +29,15 @@ app.get("/books", (req, res)=>{
     });
 })
 
+app.get("/my-books", verifyToken, (req, res) => {
+  const q = "SELECT * FROM books WHERE user_id = ?";
+
+  db.query(q, [req.user.id], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.json(data);
+  });
+});
+
 app.post("/books", verifyToken, (req,res)=>{
     const q = `INSERT INTO books (\`title\`, \`desc\`, \`price\`, \`cover\`, \`user_id\`, \`username\`) VALUES (?)`;
     const values = [
