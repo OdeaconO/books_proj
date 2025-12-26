@@ -21,13 +21,24 @@ app.get("/", (req, res)=>{
     res.json("hello this is the backend");
 })
 
-app.get("/books", (req, res)=>{
-    const q = "SELECT * FROM books";
-    db.query(q, (err, data)=>{
-        if(err) return res.json(err)
-            return res.json(data);
-    });
-})
+app.get("/books", (req, res) => {
+  const search = req.query.q || "";
+  const sort = req.query.sort || "az";
+
+  let q = `
+    SELECT * FROM books
+    WHERE title LIKE ?
+    ORDER BY title ${sort === "az" ? "ASC" : "DESC"}
+  `;
+
+  const values = [`%${search}%`];
+
+  db.query(q, values, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.json(data);
+  });
+});
+
 
 app.get("/my-books", verifyToken, (req, res) => {
   const q = "SELECT * FROM books WHERE user_id = ?";

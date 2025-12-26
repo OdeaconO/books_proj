@@ -2,24 +2,28 @@ import { useEffect, useState } from 'react'
 import { api } from "../api";
 import { Link } from 'react-router-dom';
 import { useAuth } from "../context/AuthContext";
-
+import { useSearchParams } from "react-router-dom";
 
 const Books = () => {
 
     const [books,setBooks] = useState([]);
     const { user, isAuthenticated } = useAuth();
 
-    useEffect(()=>{
-        const fetchAllBooks = async ()=>{
-            try{
-                const res = await api.get("http://localhost:8800/books");
-                setBooks(res.data);
-            } catch(err){
-                console.log(err);
-            }
+    const [searchParams] = useSearchParams();
+    
+    useEffect(() => {
+      const fetchAllBooks = async () => {
+        try {
+          const q = searchParams.get("q") || "";
+          const res = await api.get(`/books?q=${q}&sort=az`);
+          setBooks(res.data);
+        } catch (err) {
+          console.log(err);
         }
-        fetchAllBooks();
-    },[])
+      };
+      fetchAllBooks();
+    }, [searchParams]);
+
 
     const handleDelete = async (id) => {
       try{
@@ -41,17 +45,13 @@ const Books = () => {
             <p><strong>Recommended by:</strong> {book.username}</p>
             <span><strong>Price:</strong> {book.price}</span>
             {isAuthenticated && (user.role === "admin" || user.id === book.user_id) && (
-  <>
-    <button className="delete" onClick={() => handleDelete(book.id)}>
-      Delete
-    </button>
-    <button className="update">
-      <Link to={`/update/${book.id}`}>Update</Link>
-    </button>
-  </>
-)}
-          </div>
-        ))}
+              <>
+              <button className="delete" onClick={() => handleDelete(book.id)}>Delete</button>
+              <button className="update"><Link to={`/update/${book.id}`}>Update</Link></button>
+              </>
+            )}
+            </div>
+      ))}
       </div>
     </div>
   )

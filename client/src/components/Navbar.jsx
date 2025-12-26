@@ -1,9 +1,17 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useSearchParams } from "react-router-dom";
 
 const Navbar = () => {
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+  const searchQuery = searchParams.get("q") || "";
+  
+  const handleSearch = (e) => {
+  setSearchParams({ q: e.target.value });
+};
 
   const handleLogout = () => {
     logout();
@@ -19,6 +27,14 @@ const Navbar = () => {
       </div>
 
       <div className="nav-right">
+        <input
+        type="text"
+        placeholder="Search books..."
+        value={searchQuery}
+        onChange={handleSearch}
+        className="search-input"
+        />
+
         <Link to="/books">All Books</Link>
         {isAuthenticated ? (
             <>
