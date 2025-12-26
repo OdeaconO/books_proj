@@ -34,12 +34,12 @@ function App() {
   <Navbar/>
   <div className="App">
     <Routes>
-      <Route path="/" element={<Navigate to="/login"/>}/>
+      <Route path="/" element={<Navigate to="/books"/>}/>
+      <Route path="/books" element={<Books />} />
       <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
       <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
 
       <Route path="/account" element={<ProtectedRoute><Account/></ProtectedRoute>}/>
-      <Route path="/books" element={<ProtectedRoute><Books /></ProtectedRoute>} />
       <Route path="/my-books" element={<ProtectedRoute><MyBooks /></ProtectedRoute>}/>
       <Route path="/add" element={<ProtectedRoute><Add/></ProtectedRoute>}/>
       <Route path="/update/:id" element={<ProtectedRoute><Update/></ProtectedRoute>}/>

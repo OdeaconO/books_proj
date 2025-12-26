@@ -3,10 +3,11 @@ import { api } from "../api";
 import { Link } from 'react-router-dom';
 import { useAuth } from "../context/AuthContext";
 
+
 const Books = () => {
 
     const [books,setBooks] = useState([]);
-    const { user } = useAuth();
+    const { user, isAuthenticated } = useAuth();
 
     useEffect(()=>{
         const fetchAllBooks = async ()=>{
@@ -39,12 +40,16 @@ const Books = () => {
             <p><strong>Description:</strong> {book.desc}</p>
             <p><strong>Recommended by:</strong> {book.username}</p>
             <span><strong>Price:</strong> {book.price}</span>
-            {(user.role === "admin" || user.id === book.user_id) && (
-              <>
-              <button className="delete" onClick={() => handleDelete(book.id)}>Delete</button>
-              <button className="update"><Link to={`/update/${book.id}`}>Update</Link></button>
-              </>
-            )}
+            {isAuthenticated && (user.role === "admin" || user.id === book.user_id) && (
+  <>
+    <button className="delete" onClick={() => handleDelete(book.id)}>
+      Delete
+    </button>
+    <button className="update">
+      <Link to={`/update/${book.id}`}>Update</Link>
+    </button>
+  </>
+)}
           </div>
         ))}
       </div>

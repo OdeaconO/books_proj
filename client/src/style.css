@@ -133,3 +133,11 @@ input{
 .App {
   padding-top: 80px;
 }
+
+.search-input {
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: none;
+  outline: none;
+  width: 180px;
+}

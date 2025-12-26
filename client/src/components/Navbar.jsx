@@ -19,23 +19,20 @@ const Navbar = () => {
       </div>
 
       <div className="nav-right">
+        <Link to="/books">All Books</Link>
         {isAuthenticated ? (
-          <>
-            <Link to="/books">Home</Link>
-            <Link to="/my-books">My Books</Link>
-            <Link to="/add">Add Book</Link>
-            <Link to="/account">Account</Link>
-            <button className="logout-btn" onClick={handleLogout}>
-              Logout
-            </button>
-          </>
-        ) : (
-          <>
-            <Link to="/login">Login</Link>
-            <Link to="/register">Register</Link>
-          </>
+            <>
+                <Link to="/my-books">My Books</Link>
+                <Link to="/add">Add Book</Link>
+                <Link to="/account">Account</Link><button className="logout-btn" onClick={handleLogout}>Logout</button>
+            </>
+            ) : (
+            <>
+                <Link to="/login">Login</Link>
+                <Link to="/register">Register</Link>
+            </>
         )}
-      </div>
+        </div>
     </nav>
   );
 };
