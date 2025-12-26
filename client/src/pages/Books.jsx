@@ -7,16 +7,23 @@ import { useSearchParams } from "react-router-dom";
 const Books = () => {
 
     const [books,setBooks] = useState([]);
+    const [pagination, setPagination] = useState(null);
     const { user, isAuthenticated } = useAuth();
 
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     
     useEffect(() => {
       const fetchAllBooks = async () => {
         try {
           const q = searchParams.get("q") || "";
-          const res = await api.get(`/books?q=${q}&sort=az`);
-          setBooks(res.data);
+          const page = searchParams.get("page") || 1;
+          
+          const res = await api.get(
+            `/books?q=${q}&sort=az&page=${page}`
+          );
+          
+          setBooks(res.data.books);
+          setPagination(res.data.pagination);
         } catch (err) {
           console.log(err);
         }
@@ -53,6 +60,30 @@ const Books = () => {
             </div>
       ))}
       </div>
+      {pagination && (
+        <div className="pagination">
+          <button
+          disabled={pagination.currentPage === 1}
+          onClick={() =>setSearchParams({
+            q: searchParams.get("q") || "",
+            page: pagination.currentPage - 1,
+          })
+        }>Previous</button>
+        
+        <span>
+          Page {pagination.currentPage} of {pagination.totalPages}
+        </span>
+        
+        <button
+        disabled={pagination.currentPage === pagination.totalPages}
+        onClick={() =>
+          setSearchParams({
+            q: searchParams.get("q") || "",
+            page: pagination.currentPage + 1,
+          })
+        }>Next</button>
+        </div>
+      )}
     </div>
   )
 }

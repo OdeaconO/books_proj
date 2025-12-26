@@ -24,20 +24,50 @@ app.get("/", (req, res)=>{
 app.get("/books", (req, res) => {
   const search = req.query.q || "";
   const sort = req.query.sort || "az";
+  const page = parseInt(req.query.page) || 1;
+  const limit = 20;
+  const offset = (page - 1) * limit;
 
-  let q = `
+  // 1️⃣ Get total count
+  const countQuery = `
+    SELECT COUNT(*) AS total
+    FROM books
+    WHERE title LIKE ?
+  `;
+
+  // 2️⃣ Get paginated books
+  const dataQuery = `
     SELECT * FROM books
     WHERE title LIKE ?
     ORDER BY title ${sort === "az" ? "ASC" : "DESC"}
+    LIMIT ? OFFSET ?
   `;
 
-  const values = [`%${search}%`];
-
-  db.query(q, values, (err, data) => {
+  db.query(countQuery, [`%${search}%`], (err, countResult) => {
     if (err) return res.status(500).json(err);
-    return res.json(data);
+
+    const totalBooks = countResult[0].total;
+    const totalPages = Math.ceil(totalBooks / limit);
+
+    db.query(
+      dataQuery,
+      [`%${search}%`, limit, offset],
+      (err, data) => {
+        if (err) return res.status(500).json(err);
+
+        return res.json({
+          books: data,
+          pagination: {
+            currentPage: page,
+            totalPages,
+            totalBooks,
+          },
+        });
+      }
+    );
   });
 });
+
 
 
 app.get("/my-books", verifyToken, (req, res) => {
