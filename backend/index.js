@@ -28,14 +28,14 @@ app.get("/books", (req, res) => {
   const limit = 20;
   const offset = (page - 1) * limit;
 
-  // 1️⃣ Get total count
+  // get total count
   const countQuery = `
     SELECT COUNT(*) AS total
     FROM books
     WHERE title LIKE ?
   `;
 
-  // 2️⃣ Get paginated books
+  // get paginated books
   const dataQuery = `
     SELECT * FROM books
     WHERE title LIKE ?
