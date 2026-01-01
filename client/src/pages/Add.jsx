@@ -16,7 +16,7 @@ const Add = () => {
     setBook((prev)=>({...prev, [e.target.name]: e.target.value}))
   }
 
-  const handleClick = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try{
       await api.post("http://localhost:8800/books", book);
@@ -29,14 +29,14 @@ const Add = () => {
   console.log(book);
 
   return (
-    <div className='form'>
+    <form className='form' onSubmit={handleSubmit}>
       <h1>Add new book</h1>
       <input type='text' placeholder='title'onChange={handleChange} name="title"></input>
       <input type='text' placeholder='desc'onChange={handleChange} name="desc"></input>
       <input type='number' placeholder='price'onChange={handleChange} name="price"></input>
       <input type='text' placeholder='cover'onChange={handleChange} name="cover"></input>
-      <button className="formButton" onClick={handleClick}>Add</button>
-    </div>
+      <button type="submit" className="formButton" >Add</button>
+    </form>
   )
 }
 

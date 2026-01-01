@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useSearchParams } from "react-router-dom";
@@ -7,19 +7,20 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { isAuthenticated, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [searchParams, setSearchParams] = useSearchParams();
-  
+
   const searchQuery = searchParams.get("q") || "";
-  
+
   useEffect(() => {
     setMenuOpen(false);
   }, [location.pathname]);
-  
+
   const handleSearch = (e) => {
     setSearchParams({
       q: e.target.value,
-      page: 1, 
+      page: 1,
     });
   };
 
@@ -27,7 +28,7 @@ const Navbar = () => {
     logout();
   };
 
-    return (
+  return (
     <nav className="navbar">
       {/* LEFT */}
       <div className="nav-left">
@@ -38,13 +39,23 @@ const Navbar = () => {
 
       {/* RIGHT */}
       <div className="nav-right">
-        <input
-          type="text"
-          placeholder="Search books..."
-          value={searchQuery}
-          onChange={handleSearch}
-          className="search-input"
-        />
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+
+            if (location.pathname !== "/books") {
+              navigate(`/books?q=${searchQuery}&page=1`);
+            }
+          }}
+        >
+          <input
+            type="text"
+            placeholder="Search books..."
+            value={searchQuery}
+            onChange={handleSearch}
+            className="search-input"
+          />
+        </form>
 
         <button
           className="hamburger"
@@ -63,7 +74,9 @@ const Navbar = () => {
             <Link to="/my-books">My Books</Link>
             <Link to="/add">Add Book</Link>
             <Link to="/account">Account</Link>
-            <button className="logout-btn" onClick={handleLogout}>Logout</button>
+            <button className="logout-btn" onClick={handleLogout}>
+              Logout
+            </button>
           </>
         ) : (
           <>

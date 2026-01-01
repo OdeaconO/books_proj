@@ -31,7 +31,7 @@ const Login = () => {
     };
 
     return (
-        <div className="form">
+        <form className="form" onSubmit={handleSubmit}>
             <h1>Login</h1>
             
             <input 
@@ -46,13 +46,13 @@ const Login = () => {
             placeholder="Enter your password"
             onChange={handleChange} />
 
-            <button className="loginButton" onClick={handleSubmit}>Login</button>
+            <button type="submit" className="loginButton">Login</button>
             
             <p style={{ marginTop: "10px" }}>
                 Don't have an account?{" "}
                 <Link to="/register">Register here</Link>
             </p>
-        </div>
+        </form>
     );
 };
 

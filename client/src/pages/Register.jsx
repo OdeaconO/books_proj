@@ -30,7 +30,7 @@ const Register = () => {
   };
 
   return (
-    <div className="form">
+    <form className="form" onSubmit={handleSubmit}>
       <h1>Register</h1>
 
       <input
@@ -54,7 +54,7 @@ const Register = () => {
         onChange={handleChange}
       />
 
-      <button className="loginButton" onClick={handleSubmit}>
+      <button type="submit" className="loginButton">
         Register
       </button>
 
@@ -62,7 +62,7 @@ const Register = () => {
         Already have an account?{" "}
         <Link to="/login">Login here</Link>
       </p>
-    </div>
+    </form>
   );
 };
 

@@ -1,91 +1,132 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 import { api } from "../api";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useSearchParams } from "react-router-dom";
 
 const Books = () => {
+  const [books, setBooks] = useState([]);
+  const [pagination, setPagination] = useState(null);
+  const { user, isAuthenticated } = useAuth();
 
-    const [books,setBooks] = useState([]);
-    const [pagination, setPagination] = useState(null);
-    const { user, isAuthenticated } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-    const [searchParams, setSearchParams] = useSearchParams();
-    
-    useEffect(() => {
-      const fetchAllBooks = async () => {
-        try {
-          const q = searchParams.get("q") || "";
-          const page = searchParams.get("page") || 1;
-          
-          const res = await api.get(
-            `/books?q=${q}&sort=az&page=${page}`
-          );
-          
-          setBooks(res.data.books);
-          setPagination(res.data.pagination);
-        } catch (err) {
-          console.log(err);
-        }
-      };
-      fetchAllBooks();
-    }, [searchParams]);
+  useEffect(() => {
+    const fetchAllBooks = async () => {
+      try {
+        const q = searchParams.get("q") || "";
+        const page = searchParams.get("page") || 1;
 
+        const res = await api.get(`/books?q=${q}&sort=az&page=${page}`);
 
-    const handleDelete = async (id) => {
-      try{
-        await api.delete("http://localhost:8800/books/"+id);
-        window.location.reload();
-      } catch(err){
+        setBooks(res.data.books);
+        setPagination(res.data.pagination);
+      } catch (err) {
         console.log(err);
       }
+    };
+    fetchAllBooks();
+  }, [searchParams]);
+
+  const handleDelete = async (id) => {
+    try {
+      await api.delete("http://localhost:8800/books/" + id);
+      window.location.reload();
+    } catch (err) {
+      console.log(err);
     }
+  };
 
   return (
-    <div>
-      <div className="books">
-        {books.map(book=>(
-          <div className="book" key={book.id}>
-            {book.cover && <img src={book.cover} alt=""/>}
-            <h2>{book.title}</h2>
-            <p><strong>Description:</strong> {book.desc}</p>
-            <p><strong>Recommended by:</strong> {book.username}</p>
-            <span><strong>Price:</strong> {book.price}</span>
-            {isAuthenticated && (user.role === "admin" || user.id === book.user_id) && (
-              <>
-              <button className="delete" onClick={() => handleDelete(book.id)}>Delete</button>
-              <button className="update"><Link to={`/update/${book.id}`}>Update</Link></button>
-              </>
+    <div className="page">
+      <main className="page-content">
+        {books.length === 0 ? (
+          <div className="empty-state">
+            <h2>No books found 📚</h2>
+            <p>
+              {searchParams.get("q")
+                ? "Try a different search keyword."
+                : "Be the first one to add a book to the collection."}
+            </p>
+            {isAuthenticated ? (
+              <Link to="/add" className="cta-btn">
+                Be the first to add this book!
+              </Link>
+            ) : (
+              <Link to="/login" className="cta-btn">
+                Login to add books
+              </Link>
             )}
-            </div>
-      ))}
-      </div>
+          </div>
+        ) : (
+          <div className="books">
+            {books.map((book) => (
+              <div className="book" key={book.id}>
+                {book.cover && <img src={book.cover} alt="" />}
+                <h2>{book.title}</h2>
+                <p>
+                  <strong>Description:</strong> {book.desc}
+                </p>
+                <p>
+                  <strong>Recommended by:</strong> {book.username}
+                </p>
+                <span>
+                  <strong>Price:</strong> {book.price}
+                </span>
+
+                {isAuthenticated &&
+                  (user.role === "admin" || user.id === book.user_id) && (
+                    <>
+                      <button
+                        className="delete"
+                        onClick={() => handleDelete(book.id)}
+                      >
+                        Delete
+                      </button>
+                      <button className="update">
+                        <Link to={`/update/${book.id}`}>Update</Link>
+                      </button>
+                    </>
+                  )}
+              </div>
+            ))}
+          </div>
+        )}
+      </main>
+
       {pagination && (
-        <div className="pagination">
+        <footer className="pagination">
           <button
-          disabled={pagination.currentPage === 1}
-          onClick={() =>setSearchParams({
-            q: searchParams.get("q") || "",
-            page: pagination.currentPage - 1,
-          })
-        }>Previous</button>
-        
-        <span>
-          Page {pagination.currentPage} of {pagination.totalPages}
-        </span>
-        
-        <button
-        disabled={pagination.currentPage === pagination.totalPages}
-        onClick={() =>
-          setSearchParams({
-            q: searchParams.get("q") || "",
-            page: pagination.currentPage + 1,
-          })
-        }>Next</button>
-        </div>
+            disabled={pagination.currentPage === 1}
+            onClick={() =>
+              setSearchParams({
+                q: searchParams.get("q") || "",
+                page: pagination.currentPage - 1,
+              })
+            }
+          >
+            Previous
+          </button>
+
+          <span>
+            Page {pagination.currentPage} of {pagination.totalPages}
+          </span>
+
+          <button
+            disabled={pagination.currentPage === pagination.totalPages}
+            onClick={() =>
+              setSearchParams({
+                q: searchParams.get("q") || "",
+                page: pagination.currentPage + 1,
+              })
+            }
+          >
+            Next
+          </button>
+        </footer>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Books
+export default Books;
