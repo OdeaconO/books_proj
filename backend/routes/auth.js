@@ -3,7 +3,6 @@ import bcrypt from "bcrypt";
 import { db } from "../db.js";
 import jwt from "jsonwebtoken";
 
-
 const router = express.Router();
 
 /**
@@ -15,11 +14,7 @@ router.post("/register", (req, res) => {
   const salt = bcrypt.genSaltSync(10);
   const hashedPassword = bcrypt.hashSync(req.body.password, salt);
 
-  const values = [
-    req.body.username,
-    req.body.email,
-    hashedPassword
-  ];
+  const values = [req.body.username, req.body.email, hashedPassword];
 
   db.query(q, [values], (err, data) => {
     if (err) return res.status(500).json(err);
@@ -59,7 +54,7 @@ router.post("/login", (req, res) => {
         id: user.id,
         username: user.username,
         email: user.email,
-        role: user.role
+        role: user.role,
       },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
@@ -70,10 +65,9 @@ router.post("/login", (req, res) => {
 
     res.status(200).json({
       ...otherDetails,
-      token
+      token,
     });
   });
 });
-
 
 export default router;

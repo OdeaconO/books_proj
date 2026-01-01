@@ -3,6 +3,8 @@ import { api } from "../api";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useSearchParams } from "react-router-dom";
+import { useDebouncedValue } from "../utils/useDebouncedValue";
+import PaginationFooter from "../components/PaginationFooter";
 
 const Books = () => {
   const [books, setBooks] = useState([]);
@@ -11,22 +13,21 @@ const Books = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const q = searchParams.get("q") || "";
+  const page = Number(searchParams.get("page") || 1);
+
+  const debouncedQ = useDebouncedValue(q);
+
   useEffect(() => {
     const fetchAllBooks = async () => {
-      try {
-        const q = searchParams.get("q") || "";
-        const page = searchParams.get("page") || 1;
+      const res = await api.get(`/books?q=${debouncedQ}&page=${page}`);
 
-        const res = await api.get(`/books?q=${q}&sort=az&page=${page}`);
-
-        setBooks(res.data.books);
-        setPagination(res.data.pagination);
-      } catch (err) {
-        console.log(err);
-      }
+      setBooks(res.data.books);
+      setPagination(res.data.pagination);
     };
+
     fetchAllBooks();
-  }, [searchParams]);
+  }, [debouncedQ, page]);
 
   const handleDelete = async (id) => {
     try {
@@ -93,38 +94,7 @@ const Books = () => {
           </div>
         )}
       </main>
-
-      {pagination && (
-        <footer className="pagination">
-          <button
-            disabled={pagination.currentPage === 1}
-            onClick={() =>
-              setSearchParams({
-                q: searchParams.get("q") || "",
-                page: pagination.currentPage - 1,
-              })
-            }
-          >
-            Previous
-          </button>
-
-          <span>
-            Page {pagination.currentPage} of {pagination.totalPages}
-          </span>
-
-          <button
-            disabled={pagination.currentPage === pagination.totalPages}
-            onClick={() =>
-              setSearchParams({
-                q: searchParams.get("q") || "",
-                page: pagination.currentPage + 1,
-              })
-            }
-          >
-            Next
-          </button>
-        </footer>
-      )}
+      <PaginationFooter pagination={pagination} />
     </div>
   );
 };

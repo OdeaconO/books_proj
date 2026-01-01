@@ -5,55 +5,57 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
-    const [inputs, setInputs] = useState({
-        email: "",
-        password: "",
-    });
+  const [inputs, setInputs] = useState({
+    email: "",
+    password: "",
+  });
 
-    const navigate = useNavigate();
-    const { login } = useAuth();
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
-    const handleChange = (e) => {
-        setInputs((prev) => ({...prev, [e.target.name]: e.target.value}));
-    };
+  const handleChange = (e) => {
+    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        try{
-            console.log(inputs);
-            const res = await api.post("/auth/login", inputs);
-            login(res.data.token);
-            navigate("/books");
-        } catch (err){
-            console.log(err.response?.data || err.message);
-        }
-    };
+    try {
+      const res = await api.post("/auth/login", inputs);
+      login(res.data.token);
+      navigate("/books");
+    } catch (err) {
+      console.log(err.response?.data || err.message);
+    }
+  };
 
-    return (
-        <form className="form" onSubmit={handleSubmit}>
-            <h1>Login</h1>
-            
-            <input 
-            type="email"
-            name="email"
-            placeholder="Enter your email"
-            onChange={handleChange} />
+  return (
+    <form className="form" onSubmit={handleSubmit}>
+      <h1>Login</h1>
 
-            <input 
-            type="password"
-            name="password"
-            placeholder="Enter your password"
-            onChange={handleChange} />
+      <input
+        type="email"
+        name="email"
+        placeholder="Enter your email"
+        onChange={handleChange}
+      />
 
-            <button type="submit" className="loginButton">Login</button>
-            
-            <p style={{ marginTop: "10px" }}>
-                Don't have an account?{" "}
-                <Link to="/register">Register here</Link>
-            </p>
-        </form>
-    );
+      <input
+        type="password"
+        name="password"
+        placeholder="Enter your password"
+        onChange={handleChange}
+      />
+
+      <button type="submit" className="loginButton">
+        Login
+      </button>
+
+      <p style={{ marginTop: "10px" }}>
+        Don't have an account? <Link to="/register">Register here</Link>
+      </p>
+    </form>
+  );
 };
 
 export default Login;
