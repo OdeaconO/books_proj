@@ -1,20 +1,14 @@
 import { useEffect, useState } from "react";
 import { api } from "../api";
 import { Link } from "react-router-dom";
-import { useDebouncedValue } from "../utils/useDebouncedValue";
-import { useSearchParams } from "react-router-dom";
 import PaginationFooter from "../components/PaginationFooter";
+import { useSearchPagination } from "../hooks/useSearchPagination";
 import { highlightText } from "../utils/highlightText";
 
 const MyBooks = () => {
   const [books, setBooks] = useState([]);
   const [pagination, setPagination] = useState(null);
-  const [searchParams] = useSearchParams();
-
-  const q = searchParams.get("q") || "";
-  const page = Number(searchParams.get("page") || 1);
-
-  const debouncedQ = useDebouncedValue(q);
+  const { q, page, debouncedQ } = useSearchPagination();
 
   useEffect(() => {
     const fetchMyBooks = async () => {
@@ -42,14 +36,14 @@ const MyBooks = () => {
 
       {books.length === 0 && (
         <div className="empty-state">
-          <h2>No books yet 📘</h2>
+          <h2>No such books 📘</h2>
           <p>
             {q
               ? "No matching books in your collection."
               : "You haven’t added any books yet."}
           </p>
           <Link to="/add" className="cta-btn">
-            ➕ Add your first book
+            Add book
           </Link>
         </div>
       )}

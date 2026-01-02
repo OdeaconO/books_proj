@@ -2,22 +2,15 @@ import { useEffect, useState } from "react";
 import { api } from "../api";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { useSearchParams } from "react-router-dom";
-import { useDebouncedValue } from "../utils/useDebouncedValue";
 import PaginationFooter from "../components/PaginationFooter";
 import { highlightText } from "../utils/highlightText";
+import { useSearchPagination } from "../hooks/useSearchPagination";
 
 const Books = () => {
   const [books, setBooks] = useState([]);
   const [pagination, setPagination] = useState(null);
   const { user, isAuthenticated } = useAuth();
-
-  const [searchParams] = useSearchParams();
-
-  const q = searchParams.get("q") || "";
-  const page = Number(searchParams.get("page") || 1);
-
-  const debouncedQ = useDebouncedValue(q);
+  const { q, page, debouncedQ } = useSearchPagination();
 
   useEffect(() => {
     const fetchAllBooks = async () => {
@@ -46,7 +39,7 @@ const Books = () => {
           <div className="empty-state">
             <h2>No books found 📚</h2>
             <p>
-              {searchParams.get("q")
+              {q
                 ? "Try a different search keyword."
                 : "Be the first one to add a book to the collection."}
             </p>

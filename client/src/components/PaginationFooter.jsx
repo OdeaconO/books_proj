@@ -1,24 +1,17 @@
-import { useSearchParams } from "react-router-dom";
+import { useSearchPagination } from "../hooks/useSearchPagination";
 
-const PAGE_WINDOW = 5; // how many page buttons to show
+const PAGE_WINDOW = 5;
 
 const PaginationFooter = ({ pagination }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { page, limit, setPage } = useSearchPagination();
 
-  if (!pagination || pagination.totalPages <= 1) {
-    return null;
-  }
+  if (!pagination || pagination.totalPages <= 1) return null;
 
-  const q = searchParams.get("q") || "";
-  const currentPage = pagination.currentPage;
-  const totalPages = pagination.totalPages;
-  const totalBooks = pagination.totalBooks;
+  const { currentPage, totalPages, totalBooks } = pagination;
 
-  const limit = 20;
   const start = (currentPage - 1) * limit + 1;
   const end = Math.min(currentPage * limit, totalBooks);
 
-  // Calculate page window
   const half = Math.floor(PAGE_WINDOW / 2);
   let startPage = Math.max(1, currentPage - half);
   let endPage = Math.min(totalPages, startPage + PAGE_WINDOW - 1);
@@ -28,30 +21,16 @@ const PaginationFooter = ({ pagination }) => {
   }
 
   const pages = [];
-  for (let i = startPage; i <= endPage; i++) {
-    pages.push(i);
-  }
-
-  const goToPage = (page) => {
-    setSearchParams({
-      q,
-      page,
-    });
-  };
+  for (let i = startPage; i <= endPage; i++) pages.push(i);
 
   return (
     <footer className="pagination">
-      {/* Range info */}
       <span className="pagination-info">
         Showing {start}–{end} of {totalBooks}
       </span>
 
-      {/* Controls */}
       <div className="pagination-controls">
-        <button
-          disabled={currentPage === 1}
-          onClick={() => goToPage(currentPage - 1)}
-        >
+        <button disabled={currentPage === 1} onClick={() => setPage(page - 1)}>
           Previous
         </button>
 
@@ -59,7 +38,7 @@ const PaginationFooter = ({ pagination }) => {
           <button
             key={p}
             className={p === currentPage ? "active" : ""}
-            onClick={() => goToPage(p)}
+            onClick={() => setPage(p)}
           >
             {p}
           </button>
@@ -67,7 +46,7 @@ const PaginationFooter = ({ pagination }) => {
 
         <button
           disabled={currentPage === totalPages}
-          onClick={() => goToPage(currentPage + 1)}
+          onClick={() => setPage(page + 1)}
         >
           Next
         </button>
