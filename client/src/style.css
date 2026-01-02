@@ -172,6 +172,12 @@ input {
   transform: translateY(-1px);
 }
 
+mark {
+  background-color: #ffe58a;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
 /* PUSH CONTENT BELOW FIXED NAVBAR */
 
 .search-input {
@@ -214,17 +220,46 @@ input {
   position: sticky;
   bottom: 0;
   z-index: 10;
-
   margin-top: auto;
   padding: 16px 0 20px;
-
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  align-items: center;
-
   background: white;
   border-top: 1px solid #eee;
+
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pagination-info {
+  font-size: 13px;
+  color: #555;
+}
+
+.pagination-controls {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.pagination-controls button {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.pagination-controls button.active {
+  background: #222;
+  color: white;
+  border-color: #222;
+}
+
+.pagination-controls button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .pagination button {

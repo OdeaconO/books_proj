@@ -13,6 +13,15 @@ const Navbar = () => {
 
   const searchQuery = searchParams.get("q") || "";
 
+  const isBooksPage = location.pathname === "/books";
+  const isMyBooksPage = location.pathname === "/my-books";
+
+  const searchPlaceholder = isMyBooksPage
+    ? "Search your books..."
+    : isBooksPage
+    ? "Search all books..."
+    : "Search books";
+
   useEffect(() => {
     setMenuOpen(false);
   }, [location.pathname]);
@@ -50,7 +59,7 @@ const Navbar = () => {
         >
           <input
             type="text"
-            placeholder="Search books..."
+            placeholder={searchPlaceholder}
             value={searchQuery}
             onChange={handleSearch}
             className="search-input"

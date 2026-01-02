@@ -4,11 +4,12 @@ import { Link } from "react-router-dom";
 import { useDebouncedValue } from "../utils/useDebouncedValue";
 import { useSearchParams } from "react-router-dom";
 import PaginationFooter from "../components/PaginationFooter";
+import { highlightText } from "../utils/highlightText";
 
 const MyBooks = () => {
   const [books, setBooks] = useState([]);
   const [pagination, setPagination] = useState(null);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const q = searchParams.get("q") || "";
   const page = Number(searchParams.get("page") || 1);
@@ -57,7 +58,7 @@ const MyBooks = () => {
         {books.map((book) => (
           <div className="book" key={book.id}>
             {book.cover && <img src={book.cover} alt="" />}
-            <h2>{book.title}</h2>
+            <h2 className="mark">{highlightText(book.title, q)}</h2>
             <p>{book.desc}</p>
             <span>{book.price}</span>
             <button className="delete" onClick={() => handleDelete(book.id)}>

@@ -5,13 +5,14 @@ import { useAuth } from "../context/AuthContext";
 import { useSearchParams } from "react-router-dom";
 import { useDebouncedValue } from "../utils/useDebouncedValue";
 import PaginationFooter from "../components/PaginationFooter";
+import { highlightText } from "../utils/highlightText";
 
 const Books = () => {
   const [books, setBooks] = useState([]);
   const [pagination, setPagination] = useState(null);
   const { user, isAuthenticated } = useAuth();
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const q = searchParams.get("q") || "";
   const page = Number(searchParams.get("page") || 1);
@@ -64,7 +65,7 @@ const Books = () => {
             {books.map((book) => (
               <div className="book" key={book.id}>
                 {book.cover && <img src={book.cover} alt="" />}
-                <h2>{book.title}</h2>
+                <h2 className="mark">{highlightText(book.title, q)}</h2>
                 <p>
                   <strong>Description:</strong> {book.desc}
                 </p>
