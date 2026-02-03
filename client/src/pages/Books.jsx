@@ -1,32 +1,73 @@
 import { useEffect, useState } from "react";
+import BookCard from "../components/BookCard";
 import { api } from "../api";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import PaginationFooter from "../components/PaginationFooter";
-import { highlightText } from "../utils/highlightText";
 import { useSearchPagination } from "../hooks/useSearchPagination";
 
 const Books = () => {
   const [books, setBooks] = useState([]);
   const [pagination, setPagination] = useState(null);
   const { user, isAuthenticated } = useAuth();
-  const { q, page, debouncedQ } = useSearchPagination();
+  const { q, page, debouncedQ, genre, sort, order, setPage } =
+    useSearchPagination();
 
   useEffect(() => {
     const fetchAllBooks = async () => {
-      const res = await api.get(`/books?q=${debouncedQ}&page=${page}`);
+      const res = await api.get("/books", {
+        params: {
+          q: debouncedQ,
+          page,
+          genre,
+          sort,
+          order,
+        },
+      });
+
+      console.log("DEBUG: API Data", res.data.books);
 
       setBooks(res.data.books);
       setPagination(res.data.pagination);
     };
 
     fetchAllBooks();
-  }, [debouncedQ, page]);
+  }, [debouncedQ, page, genre, sort, order]);
 
   const handleDelete = async (id) => {
+    const shouldRefetch = pagination && pagination.totalBooks % 20 === 1;
+
     try {
-      await api.delete("http://localhost:8800/books/" + id);
-      window.location.reload();
+      await api.delete(`/books/${id}`);
+
+      setBooks((prev) => {
+        const updated = prev.filter((b) => b.id !== id);
+
+        if (updated.length === 0 && page > 1) {
+          setPage(page - 1); // 👈 move back safely
+        }
+
+        return updated;
+      });
+
+      setPagination((prev) => {
+        if (!prev) return prev;
+
+        const newTotalBooks = prev.totalBooks - 1;
+        const newTotalPages = Math.max(1, Math.ceil(newTotalBooks / 20));
+
+        return {
+          ...prev,
+          totalBooks: newTotalBooks,
+          totalPages: newTotalPages,
+        };
+      });
+
+      if (shouldRefetch) {
+        const res = await api.get(`/books?q=${debouncedQ}&page=${page}`);
+        setBooks(res.data.books);
+        setPagination(res.data.pagination);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -56,34 +97,14 @@ const Books = () => {
         ) : (
           <div className="books">
             {books.map((book) => (
-              <div className="book" key={book.id}>
-                {book.cover && <img src={book.cover} alt="" />}
-                <h2 className="mark">{highlightText(book.title, q)}</h2>
-                <p>
-                  <strong>Description:</strong> {book.desc}
-                </p>
-                <p>
-                  <strong>Recommended by:</strong> {book.username}
-                </p>
-                <span>
-                  <strong>Price:</strong> {book.price}
-                </span>
-
-                {isAuthenticated &&
-                  (user.role === "admin" || user.id === book.user_id) && (
-                    <>
-                      <button
-                        className="delete"
-                        onClick={() => handleDelete(book.id)}
-                      >
-                        Delete
-                      </button>
-                      <button className="update">
-                        <Link to={`/update/${book.id}`}>Update</Link>
-                      </button>
-                    </>
-                  )}
-              </div>
+              <BookCard
+                key={book.id}
+                book={book}
+                q={q}
+                user={user}
+                isAuthenticated={isAuthenticated}
+                onDelete={handleDelete} // Pass the delete function down
+              />
             ))}
           </div>
         )}

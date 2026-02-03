@@ -3,21 +3,31 @@ import { db } from "../db.js";
 export const authorizeBookOwner = (req, res, next) => {
   const bookId = req.params.id;
 
-  const q = "SELECT user_id FROM books WHERE id = ?";
+  const q = `
+    SELECT source, created_by
+    FROM books
+    WHERE id = ?
+  `;
 
   db.query(q, [bookId], (err, data) => {
-    if (err) return res.status(500).json(err);
-    if (data.length === 0) return res.status(404).json("Book not found");
+    if (err) {
+      console.error(err);
+      return res.status(500).json("Database error");
+    }
 
-    const bookOwnerId = data[0].user_id;
+    if (data.length === 0) {
+      return res.status(404).json("Book not found");
+    }
 
-    // Admin can do anything
+    const book = data[0];
+
+    // Admin can modify anything
     if (req.user.role === "admin") {
       return next();
     }
 
-    // Owner can modify their own book
-    if (bookOwnerId === req.user.id) {
+    // Users can modify ONLY their own user-created books
+    if (book.source === "user" && book.created_by === req.user.id) {
       return next();
     }
 

@@ -5,10 +5,22 @@ import { useNavigate } from "react-router-dom";
 const Add = () => {
   const [book, setBook] = useState({
     title: "",
+    authors: "",
+    genre: "",
     desc: "",
-    price: null,
-    cover: "",
   });
+
+  const GENRES = [
+    "fantasy",
+    "sci-fi",
+    "romance",
+    "mystery",
+    "horror",
+    "thriller",
+    "true crime",
+  ];
+
+  const [file, setFile] = useState(null);
 
   const navigate = useNavigate();
 
@@ -18,11 +30,27 @@ const Add = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      await api.post("http://localhost:8800/books", book);
-      navigate("/");
+      const formData = new FormData();
+      formData.append("title", book.title);
+      formData.append("authors", book.authors);
+      formData.append("genre", book.genre);
+      formData.append("desc", book.desc);
+
+      if (file) {
+        formData.append("cover", file);
+      }
+
+      await api.post("/books", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      navigate("/my-books");
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
@@ -31,28 +59,51 @@ const Add = () => {
       <h1>Add new book</h1>
       <input
         type="text"
-        placeholder="title"
-        onChange={handleChange}
+        placeholder="Title"
         name="title"
-      ></input>
+        value={book.title}
+        onChange={handleChange}
+      />
+
       <input
         type="text"
-        placeholder="desc"
+        placeholder="Authors"
+        name="authors"
+        value={book.authors}
         onChange={handleChange}
+      />
+
+      <label>
+        Genre:
+        <select
+          name="genre"
+          value={book.genre}
+          onChange={handleChange}
+          required
+        >
+          <option value="">Select a genre</option>
+          {GENRES.map((g) => (
+            <option key={g} value={g}>
+              {g.charAt(0).toUpperCase() + g.slice(1)}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      <input
+        type="text"
+        placeholder="Description"
         name="desc"
-      ></input>
-      <input
-        type="number"
-        placeholder="price"
+        value={book.desc}
         onChange={handleChange}
-        name="price"
-      ></input>
+      />
+
       <input
-        type="text"
-        placeholder="cover"
-        onChange={handleChange}
-        name="cover"
-      ></input>
+        type="file"
+        accept="image/*"
+        onChange={(e) => setFile(e.target.files[0])}
+      />
+
       <button type="submit" className="formButton">
         Add
       </button>

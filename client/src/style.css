@@ -20,10 +20,12 @@ body {
 
 .books {
   display: grid;
+  flex: 1;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 24px;
   justify-items: center;
   align-items: stretch;
+  align-content: start;
 }
 
 .book {
@@ -43,6 +45,7 @@ body {
 }
 
 .book img {
+  display: block;
   width: 100%;
   height: 300px;
   object-fit: cover;
@@ -110,7 +113,7 @@ input {
   position: fixed;
   top: 0;
   width: 100%;
-  background: #222;
+  background: #4b4b4b;
   color: white;
   padding: 10px 16px;
   display: flex;
@@ -164,7 +167,9 @@ input {
   font-weight: bold;
   font-size: 14px;
 
-  transition: background 0.2s ease, transform 0.1s ease;
+  transition:
+    background 0.2s ease,
+    transform 0.1s ease;
 }
 
 .cta-btn:hover {
@@ -184,6 +189,21 @@ mark {
   flex: 1;
   min-width: 0;
   max-width: 160px;
+  border-radius: 10px;
+}
+
+.search-and-filter-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+/* This is the critical fix */
+.search-form {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .hamburger {
@@ -282,6 +302,8 @@ mark {
 
 .page-content {
   flex: 1;
+  display: flex;
+  flex-direction: column;
   padding-bottom: 80px;
 }
 
@@ -304,6 +326,113 @@ mark {
 .empty-state p {
   font-size: 14px;
   max-width: 300px;
+}
+
+.book-detail {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.book-detail img {
+  width: 100%;
+  max-width: 300px;
+}
+
+.book-info .authors {
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.book-info .genre {
+  margin-top: 0.25rem;
+  font-weight: 600;
+}
+
+.book-info .description {
+  margin-top: 1.5rem;
+  line-height: 1.6;
+}
+
+.book-info .meta {
+  margin-top: 2rem;
+  opacity: 0.6;
+  font-size: 0.9rem;
+}
+
+.book.reading {
+  border: 2px solid #4caf50;
+  background: linear-gradient(180deg, rgba(76, 175, 80, 0.08), transparent);
+}
+
+.book.reading::before {
+  content: "📖 Currently Reading";
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #4caf50;
+  margin-bottom: 0.5rem;
+}
+
+.filter-btn {
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.filter-icon {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+.filter-btn.active .filter-icon {
+  opacity: 0.9;
+}
+
+.filter-wrapper {
+  position: relative;
+}
+
+.filter-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+
+  background: #fff;
+  color: #222;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px;
+  min-width: 220px;
+
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  z-index: 2000;
+}
+
+.filter-dropdown .dropdown-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filter-dropdown button {
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.filter-dropdown button:hover,
+.filter-dropdown button.active {
+  background: #f2f2f2;
 }
 
 @media (min-width: 768px) {
