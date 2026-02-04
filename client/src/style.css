@@ -42,6 +42,11 @@ body {
   border: 1px solid #eee;
   padding: 12px;
   border-radius: 6px;
+
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
 }
 
 .book img {
@@ -59,6 +64,11 @@ body {
 .book .delete,
 .book .update {
   margin-top: auto;
+}
+
+.book h2 {
+  text-align: center;
+  width: 100%;
 }
 
 .delete {
@@ -131,10 +141,10 @@ input {
 
 .nav-right {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
   flex: 1;
-  justify-content: flex-end;
 }
 
 .nav-right a {
@@ -190,13 +200,38 @@ mark {
   min-width: 0;
   max-width: 160px;
   border-radius: 10px;
+  height: 36px;
 }
 
 .search-and-filter-container {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
+  flex-direction: row;
+  align-items: center; /* 🔑 keep everything aligned */
+  gap: 12px;
+}
+
+.active-filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+
+  background: #4b4b4b; /* same as navbar */
+  border-radius: 10px;
+
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+
+/* Container that holds active filters */
+.active-filters-wrapper {
+  background: #3f3f3f; /* slightly darker/lighter than navbar */
+  border-radius: 10px;
+  padding: 6px 8px;
+  margin-top: 4px;
+
+  display: flex;
+  justify-content: flex-end;
 }
 
 /* This is the critical fix */
@@ -223,6 +258,7 @@ mark {
   background: #222;
   display: none;
   flex-direction: column;
+  margin-left: 16px;
 }
 
 .nav-menu a {
@@ -230,6 +266,13 @@ mark {
   color: white;
   text-decoration: none;
   border-top: 1px solid #333;
+}
+
+.nav-menu a,
+.logout-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
 }
 
 .nav-menu.open {
@@ -307,6 +350,11 @@ mark {
   padding-bottom: 80px;
 }
 
+.page-content:has(.book-detail) {
+  justify-content: center;
+  align-items: center;
+}
+
 .empty-state {
   min-height: 50vh;
   display: flex;
@@ -330,9 +378,11 @@ mark {
 
 .book-detail {
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: auto 1fr;
   gap: 2rem;
   align-items: start;
+  justify-content: center;
+  gap: clamp(1.5rem, 4vw, 3rem);
 }
 
 .book-detail img {
@@ -435,12 +485,116 @@ mark {
   background: #f2f2f2;
 }
 
-@media (min-width: 768px) {
-  .App {
-    padding-left: 40px;
-    padding-right: 40px;
-  }
+.action-btn,
+.delete,
+.update {
+  border-radius: 999px; /* pill shape */
+}
 
+.book-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.book-info .action-btn {
+  align-self: flex-start;
+  min-width: 220px;
+}
+
+.reading-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.cover-card img {
+  width: 100%;
+  max-width: clamp(220px, 30vw, 340px);
+  height: auto;
+}
+
+.cover-card img {
+  width: 100%;
+  max-width: clamp(220px, 30vw, 340px);
+  height: auto;
+}
+
+.info-card {
+  width: 100%;
+  max-width: clamp(320px, 60vw, 700px);
+}
+
+.book-info .description {
+  font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+}
+
+.active-filters {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* spacing between chips & clear */
+  flex-wrap: wrap;
+}
+
+/* Individual filter pill */
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px; /* text ↔ close button */
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border-radius: 999px; /* pill */
+  font-size: 12px;
+
+  padding: 4px 10px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+/* Close (✕) button */
+.filter-chip button {
+  background: rgba(0, 0, 0, 0.25);
+  border: none;
+  color: white;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%; /* circular */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-size: 12px;
+
+  margin-left: 2px;
+}
+
+.filter-chip:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Clear all pill */
+.clear-chip {
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+  border: none;
+  color: white;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* Full navbar only on large tablets & desktop */
+@media (min-width: 1024px) {
   .hamburger {
     display: none;
   }
@@ -464,5 +618,78 @@ mark {
   .App {
     padding-left: 100px;
     padding-right: 100px;
+  }
+}
+
+@media (max-width: 900px) {
+  .active-filters {
+    max-width: 280px;
+  }
+}
+
+/* Mobile layout for Book Detail */
+@media (max-width: 1024px) {
+  .book-detail {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .book-info {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .book-info h1 {
+    margin-top: 1rem;
+    font-size: 1.4rem;
+  }
+
+  .book-info .authors,
+  .book-info .genre,
+  .book-info .meta {
+    text-align: center;
+  }
+
+  .book-info .description {
+    margin-top: 1rem;
+    line-height: 1.6;
+    text-align: center;
+    font-size: 0.95rem;
+  }
+
+  .book-info button {
+    width: 100%;
+  }
+
+  .book-info .action-btn {
+    width: auto;
+    min-width: 200px;
+    margin: 0.5rem auto;
+    display: block;
+    align-self: center;
+  }
+}
+
+/* Full navbar only on large tablets & desktop */
+@media (min-width: 1024px) {
+  .hamburger {
+    display: none;
+  }
+
+  .nav-menu {
+    position: static;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    background: none;
+    width: auto;
+  }
+
+  .nav-menu a {
+    border: none;
+    padding: 0;
   }
 }

@@ -1,14 +1,9 @@
 import { useEffect, useState } from "react";
-import {
-  addToMyBooks as apiAddToMyBooks,
-  removeFromMyBooks as apiRemoveFromMyBooks,
-  addToReadingList as apiAddToReadingList,
-  removeFromReadingList as apiRemoveFromReadingList,
-  isInMyBooks,
-  isInReadingList,
-} from "../api";
+import { api } from "../api";
 
 export const useBookActions = (bookId) => {
+  // NOTE: using localStorage token because AuthContext
+  // is not hydrated on initial load
   const token = localStorage.getItem("token");
 
   const [inMyBooks, setInMyBooks] = useState(false);
@@ -16,7 +11,6 @@ export const useBookActions = (bookId) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 🔑 CRITICAL GUARD
     if (!token || !bookId) {
       setLoading(false);
       setInMyBooks(false);
@@ -24,23 +18,19 @@ export const useBookActions = (bookId) => {
       return;
     }
 
-    const checkStatus = async () => {
+    const fetchStatus = async () => {
       try {
-        const [myBooksRes, readingRes] = await Promise.all([
-          isInMyBooks(bookId),
-          isInReadingList(bookId),
-        ]);
-
-        setInMyBooks(myBooksRes.data);
-        setInReadingList(readingRes.data);
+        const res = await api.get(`/book-actions/${bookId}`);
+        setInMyBooks(res.data.inMyBooks);
+        setInReadingList(res.data.inReadingList);
       } catch (err) {
-        console.error("Book status check failed:", err);
+        console.error("Failed to fetch book actions", err);
       } finally {
         setLoading(false);
       }
     };
 
-    checkStatus();
+    fetchStatus();
   }, [bookId, token]);
 
   return {
@@ -50,25 +40,25 @@ export const useBookActions = (bookId) => {
 
     addToMyBooks: async () => {
       if (!token) return;
-      await apiAddToMyBooks(bookId);
+      await api.post("/user-books", { bookId });
       setInMyBooks(true);
     },
 
     removeFromMyBooks: async () => {
       if (!token) return;
-      await apiRemoveFromMyBooks(bookId);
+      await api.delete(`/user-books/${bookId}`);
       setInMyBooks(false);
     },
 
     addToReadingList: async () => {
       if (!token) return;
-      await apiAddToReadingList(bookId);
+      await api.post("/reading-list", { bookId });
       setInReadingList(true);
     },
 
     removeFromReadingList: async () => {
       if (!token) return;
-      await apiRemoveFromReadingList(bookId);
+      await api.delete(`/reading-list/${bookId}`);
       setInReadingList(false);
     },
   };

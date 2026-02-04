@@ -457,6 +457,38 @@ app.get("/reading-list/:bookId/status", verifyToken, (req, res) => {
   });
 });
 
+app.get("/book-actions/:bookId", verifyToken, (req, res) => {
+  const userId = req.user.id;
+  const bookId = req.params.bookId;
+
+  const q = `
+    SELECT
+      EXISTS(
+        SELECT 1 FROM user_books
+        WHERE user_id = ? AND book_id = ?
+      ) AS inMyBooks,
+      EXISTS(
+        SELECT 1 FROM reading_list
+        WHERE user_id = ? AND book_id = ?
+      ) AS inReadingList
+  `;
+
+  db.query(q, [userId, bookId, userId, bookId], (err, data) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({
+        inMyBooks: false,
+        inReadingList: false,
+      });
+    }
+
+    return res.status(200).json({
+      inMyBooks: Boolean(data[0].inMyBooks),
+      inReadingList: Boolean(data[0].inReadingList),
+    });
+  });
+});
+
 app.post("/books", verifyToken, upload.single("cover"), async (req, res) => {
   try {
     const { title, authors, desc, genre } = req.body;

@@ -90,77 +90,81 @@ const BookDetail = () => {
     <div className="page">
       <main className="page-content">
         <div className="book-detail">
-          <img
-            src={getCoverUrl(book, "L")}
-            alt={book.title}
-            loading="lazy"
-            onError={(e) => {
-              e.currentTarget.onerror = null;
-              e.currentTarget.src = placeholder;
-            }}
-          />
+          <div className="card cover-card">
+            <img
+              src={getCoverUrl(book, "L")}
+              alt={book.title}
+              loading="lazy"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = placeholder;
+              }}
+            />
+          </div>
 
-          <div className="book-info">
-            <h1>{book.title}</h1>
+          <div className="card info-card">
+            <div className="book-info">
+              <h1>{book.title}</h1>
 
-            <strong>Author: </strong>
-            {book.authors && <p className="authors">{book.authors}</p>}
+              <strong>Author: </strong>
+              {book.authors && <p className="authors">{book.authors}</p>}
 
-            <strong>Genre: </strong>
-            {book.genre && <p className="genre">{book.genre}</p>}
+              <strong>Genre: </strong>
+              {book.genre && <p className="genre">{book.genre}</p>}
 
-            {/* 📚 My Books actions */}
-            {token && (
-              <>
-                {!actions.inMyBooks ? (
-                  <button
-                    onClick={actions.addToMyBooks}
-                    className="action-btn add"
-                  >
-                    Add to My Books
-                  </button>
-                ) : (
-                  <button
-                    onClick={actions.removeFromMyBooks}
-                    className="action-btn remove"
-                  >
-                    Remove from My Books
-                  </button>
-                )}
-
-                {!actions.inReadingList ? (
-                  <button
-                    onClick={actions.addToReadingList}
-                    className="action-btn add"
-                  >
-                    Add to Reading List
-                  </button>
-                ) : (
-                  <>
+              {/* 📚 My Books actions */}
+              {token && (
+                <>
+                  {!actions.inMyBooks ? (
                     <button
-                      onClick={actions.removeFromReadingList}
+                      onClick={actions.addToMyBooks}
+                      className="action-btn add"
+                    >
+                      Add to My Books
+                    </button>
+                  ) : (
+                    <button
+                      onClick={actions.removeFromMyBooks}
                       className="action-btn remove"
                     >
-                      Remove from Reading List
+                      Remove from My Books
                     </button>
+                  )}
 
+                  {!actions.inReadingList ? (
                     <button
-                      onClick={setAsCurrentlyReading}
-                      className={`action-btn ${currentlyReading ? "active" : ""}`}
-                      disabled={currentlyReading || crLoading}
+                      onClick={actions.addToReadingList}
+                      className="action-btn add"
                     >
-                      {currentlyReading
-                        ? "✔ Currently Reading"
-                        : "Mark as Currently Reading"}
+                      Add to Reading List
                     </button>
-                  </>
-                )}
-              </>
-            )}
+                  ) : (
+                    <>
+                      <button
+                        onClick={actions.removeFromReadingList}
+                        className="action-btn remove"
+                      >
+                        Remove from Reading List
+                      </button>
 
-            <p className="description">{book.desc}</p>
+                      <button
+                        onClick={setAsCurrentlyReading}
+                        className={`action-btn ${currentlyReading ? "active" : ""}`}
+                        disabled={currentlyReading || crLoading}
+                      >
+                        {currentlyReading
+                          ? "✔ Currently Reading"
+                          : "Mark as Currently Reading"}
+                      </button>
+                    </>
+                  )}
+                </>
+              )}
 
-            <p className="meta">Added by {book.username ?? "Open Library"}</p>
+              <p className="description">{book.desc}</p>
+
+              <p className="meta">Added by {book.username ?? "Open Library"}</p>
+            </div>
           </div>
         </div>
       </main>

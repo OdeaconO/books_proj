@@ -248,32 +248,34 @@ const Navbar = () => {
           {(currentGenre ||
             currentSort !== "title" ||
             currentOrder !== "asc") && (
-            <div className="active-filters">
-              {currentGenre && (
-                <span className="filter-chip">
-                  Genre: {currentGenre}
-                  <button onClick={() => setGenre("")} title="Remove genre">
-                    ✕
-                  </button>
-                </span>
-              )}
+            <div className="active-filters-wrapper">
+              <div className="active-filters">
+                {currentGenre && (
+                  <span className="filter-chip">
+                    {currentGenre}
+                    <button onClick={() => setGenre("")} title="Remove genre">
+                      ✕
+                    </button>
+                  </span>
+                )}
 
-              {/* Show sort chip if it is NOT the default (A-Z) */}
-              {(currentSort !== "title" || currentOrder !== "asc") && (
-                <span className="filter-chip">
-                  Sort: {getSortLabel()}
-                  <button
-                    onClick={() => setSort("title", "asc")}
-                    title="Reset sort"
-                  >
-                    ✕
-                  </button>
-                </span>
-              )}
+                {/* Show sort chip if it is NOT the default (A-Z) */}
+                {(currentSort !== "title" || currentOrder !== "asc") && (
+                  <span className="filter-chip">
+                    {getSortLabel()}
+                    <button
+                      onClick={() => setSort("title", "asc")}
+                      title="Reset sort"
+                    >
+                      ✕
+                    </button>
+                  </span>
+                )}
 
-              <button className="clear-chip" onClick={clearAllFilters}>
-                Clear all
-              </button>
+                <button className="clear-chip" onClick={clearAllFilters}>
+                  Clear all
+                </button>
+              </div>
             </div>
           )}
         </div>
